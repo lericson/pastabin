@@ -31,6 +31,9 @@ class Pasta(db.Model):
     def make_formatter(self):
         return HtmlFormatter(cssclass="source", linenospecial=5)
 
+    def make_lexer(self):
+        return get_lexer_by_name(self.lexer)
+
     def hilight(self, store=True):
         """Hilight the code in *self.code*.
 
@@ -38,7 +41,7 @@ class Pasta(db.Model):
         (unless store=False is given).
         """
         formatter = self.make_formatter()
-        lexer = get_lexer_by_name(self.lexer)
+        lexer = self.make_lexer()
         self.code_html = pygments.highlight(self.code, lexer, formatter)
         return self.code_html
 

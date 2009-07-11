@@ -1,7 +1,7 @@
 import logging
 
-from werkzeug.utils import redirect
-from werkzeug.exceptions import MethodNotAllowed
+from werkzeug import Response, redirect
+from werkzeug.exceptions import NotFound, MethodNotAllowed
 from werkzeug.routing import Rule
 from pygments.lexers import guess_lexer
 from pygments.lexers import ClassNotFound as LexerNotFound
@@ -70,6 +70,26 @@ class PastaCreateView(BaseView):
 class PastaShowView(BaseView):
     allowed_methods = "GET",
 
-    def get(self, pasta_id):
+    def pasta_from_id(self, pasta_id):
         pasta = Pasta.all().filter("pasta_id =", pasta_id).get()
+        if pasta is None:
+            raise NotFound(pasta_id)
+        return pasta
+
+    def get(self, pasta_id):
+        pasta = self.pasta_from_id(pasta_id)
         return JinjaResponse("show_pasta.html", {"pasta": pasta})
+
+class PastaShowTextView(PastaShowView):
+    def get(self, pasta_id):
+        pasta = self.pasta_from_id(pasta_id)
+        return Response(pasta.code, mimetype="text/plain")
+
+class PastaShowAttachmentView(PastaShowView):
+    def get(self, pasta_id):
+        pasta = self.pasta_from_id(pasta_id)
+        lexer = pasta.make_lexer()
+        mimetype = lexer.mimetypes[0]
+        fname = pasta.pasta_id + lexer.filenames[0][1:]
+        headers = [("Content-Disposition", "attachment; filename=" + fname)]
+        return Response(pasta.code, mimetype=mimetype, headers=headers)

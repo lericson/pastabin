@@ -6,12 +6,15 @@ from werkzeug.exceptions import HTTPException
 from werkzeug.routing import Map, Rule
 from jinja2 import Environment, FileSystemLoader
 
-from pastabin.views import PastaCreateView, PastaShowView
+from pastabin.views import (PastaCreateView, PastaShowView,
+                            PastaShowTextView, PastaShowAttachmentView)
 from pastabin.utils import local, local_mgr
 
 url_map = Map([
     PastaCreateView.create_rule("/"),
     PastaShowView.create_rule("/p/<pasta_id>/"),
+    PastaShowTextView.create_rule("/p/<pasta_id>/text/"),
+    PastaShowAttachmentView.create_rule("/p/<pasta_id>/attachment/"),
 ])
 
 template_dir = path.join(path.dirname(path.dirname(__file__)), "templates")
@@ -24,8 +27,7 @@ def pastabin_app(environ, start_response):
     local.request = Request(environ)
     try:
         endpoint, kwds = local.adapter.match()
+        response = endpoint(local.request, **kwds)
     except HTTPException, e:
         response = e
-    else:
-        response = endpoint(local.request, **kwds)
     return response(environ, start_response)
