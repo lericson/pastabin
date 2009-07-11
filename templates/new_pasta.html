@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Pasta ist sehr gut, ja!{% endblock %}
+
+{% block body %}
+  <div id="container">
+    <form id="pasteform" action="/" method="post" accept-charset="utf-8">
+      <label for="lexer">
+        I'm having
+        <select name="lexer" id="lexer">
+          <option value="text" selected="selected">the usual</option>
+          <option value="not_in_list">(manual input)</option>
+          <option value="as">ActionScript</option>
+          <option value="apacheconf">Apache configuration</option>
+          <option value="bash">Bash</option>
+          <option value="bat">Batchfile</option>
+          <option value="bbcode">BBCode</option>
+          <option value="c">C</option>
+          <option value="csharp">C#</option>
+          <option value="css">CSS</option>
+          <option value="d">D</option>
+          <option value="delphi">Delphi</option>
+          <option value="diff">Diff</option>
+          <option value="django">Django template</option>
+          <option value="erlang">Erlang</option>
+          <option value="haskell">Haskell</option>
+          <option value="html">HTML</option>
+          <option value="ini">INI</option>
+          <option value="java">Java</option>
+          <option value="js">JavaScript &#9733;</option>
+          <option value="jsp">JSP (Java Server Page&trade;)</option>
+          <option value="django">Jinja template</option>
+          <option value="tex">LaTeX</option>
+          <option value="common-lisp">Lisp (CLisp)</option>
+          <option value="llvm">LLVM</option>
+          <option value="lua">Lua</option>
+          <option value="make">Makefile</option>
+          <option value="mako">Mako</option>
+          <option value="trac-wiki">Trac Wiki markup</option>
+          <option value="objective-c">Objective-C</option>
+          <option value="ocaml">OCaml</option>
+          <option value="perl">Perl</option>
+          <option value="php">PHP</option>
+          <option value="python">Python &#9829;</option>
+          <option value="pycon">Python interactive interpreter</option>
+          <option value="rst">reStructuredText</option>
+          <option value="rhtml">RHTML</option>
+          <option value="rb">Ruby</option>
+          <option value="rbcon">Ruby IRB session</option>
+          <option value="scheme">Scheme</option>
+          <option value="sql">SQL</option>
+          <option value="text">Text only</option>
+          <option value="vim">Vim script</option>
+          <option value="xml">XML</option>
+        </select>
+        pasta
+      </label>
+      {% for error in errors %}
+        <p class="errror {{ error.0 }}">{{ error.1 }}</p>
+      {% endfor %}
+      <div id="pc"><textarea id="code" name="code" rows="8" cols="40">{{ code|e }}</textarea></div>
+      <p><input type="submit" id="make_pasta" value="Make pasta"/></p>
+    </form>
+  </div>
+{% endblock %}

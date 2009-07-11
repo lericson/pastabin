@@ -1,0 +1,11 @@
+application: pastabin
+version: 1-knuse
+runtime: python
+api_version: 1
+
+handlers:
+- url: /static
+  static_dir: static
+
+- url: .*
+  script: runcgi.py

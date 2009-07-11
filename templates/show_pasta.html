@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Viewing the {{ pasta.lexer }} {{ pasta.pasta_id }} pasta{% endblock %}
+
+{% block body %}
+  {{ style }}
+  <ul id="menu">
+    <li><a href="text/">Original text</a></li>
+    <li><a href="attachment/">As attachment</a></li>
+  </ul>
+  <br style="clear: left;"/>
+    {{ pasta.code_html }}
+{% endblock %}
