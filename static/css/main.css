@@ -87,6 +87,13 @@ ul#menu li a:hover {
   border-right: 1px solid #e4e9f7;
 }
 
+.linenos .special {
+    display: inline-block;
+    -webkit-transform: translateX(-12.5%) scale(1.25);
+    color: #028;
+    text-shadow: 0 0 4px #fff;
+}
+
 .source  { padding: 10px; }
 
 div.verse { margin-bottom: 1em; }
