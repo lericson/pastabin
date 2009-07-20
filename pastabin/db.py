@@ -29,7 +29,7 @@ class Pasta(db.Model):
         return "<%s %s for %s (%s) in %s (%s)>" % args
 
     def make_formatter(self):
-        return HtmlFormatter(cssclass="source", linenospecial=5)
+        return HtmlFormatter(cssclass="source", linenos=True, linenospecial=5)
 
     def make_lexer(self):
         return get_lexer_by_name(self.lexer)
