@@ -1,14 +1,23 @@
 import uuid
 import logging
 
-from werkzeug import Response, redirect
-from werkzeug.exceptions import NotFound, MethodNotAllowed
-from werkzeug.routing import Rule
 from pygments.lexers import guess_lexer
 from pygments.lexers import ClassNotFound as LexerNotFound
+from werkzeug import Response, redirect
+from werkzeug.routing import Rule
+from werkzeug.exceptions import (BadRequest, Forbidden,
+                                 NotFound, MethodNotAllowed)
 
 from pastabin.db import Pasta
 from pastabin.utils import JinjaResponse, valid_uuid
+
+class YouMayNotPass(JinjaResponse, Forbidden):
+    template_name = "you_may_not_pass.html"
+
+    def __init__(self, template_name=None, context={}, **kwds):
+        template_name = template_name or self.template_name
+        JinjaResponse.__init__(self, template_name=template_name,
+                               context=context, **kwds)
 
 class BaseView(object):
     uuid_cookie = "uuid"
@@ -31,6 +40,15 @@ class BaseView(object):
         if curr_uuid and valid_uuid(curr_uuid):
             return curr_uuid
         return str(uuid.uuid4())
+
+    def match_uuid(self, pasta):
+        curr_uuid = self.request.cookies.get(self.uuid_cookie)
+        if not curr_uuid or not valid_uuid(curr_uuid):
+            return False
+        elif not pasta.uuid:
+            return False
+        else:
+            return pasta.uuid == curr_uuid
 
     @classmethod
     def create_rule(cls, *args, **kwds):
@@ -86,11 +104,12 @@ class PastaCreateView(BaseView):
 class PastaShowView(BaseView):
     allowed_methods = "GET",
 
-    def pasta_from_id(self, pasta_id):
+    def pasta_from_id(self, pasta_id, touch=True):
         pasta = Pasta.all().filter("pasta_id =", pasta_id).get()
         if pasta is None:
             raise NotFound(pasta_id)
-        pasta.touch()
+        if touch:
+            pasta.touch()
         return pasta
 
     def get(self, pasta_id):
@@ -112,3 +131,11 @@ class PastaShowAttachmentView(PastaShowView):
         fname = pasta.pasta_id + lexer.filenames[0][1:]
         headers = [("Content-Disposition", "attachment; filename=" + fname)]
         return Response(pasta.code, mimetype=mimetype, headers=headers)
+
+class PastaDeleteView(PastaShowView):
+    def get(self, pasta_id):
+        pasta = self.pasta_from_id(pasta_id, touch=False)
+        if not self.match_uuid(pasta):
+            raise YouMayNotPass()
+        pasta.delete()
+        return redirect("/")

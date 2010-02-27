@@ -6,15 +6,17 @@ from werkzeug.exceptions import HTTPException
 from werkzeug.routing import Map, Rule
 from jinja2 import Environment, FileSystemLoader
 
-from pastabin.views import (PastaCreateView, PastaShowView,
-                            PastaShowTextView, PastaShowAttachmentView)
+from pastabin import views
 from pastabin.utils import local, local_mgr
 
+def R(view, url): return view.create_rule(url)
+
 url_map = Map([
-    PastaCreateView.create_rule("/"),
-    PastaShowView.create_rule("/p/<pasta_id>/"),
-    PastaShowTextView.create_rule("/p/<pasta_id>/text/"),
-    PastaShowAttachmentView.create_rule("/p/<pasta_id>/attachment/"),
+    R(views.PastaCreateView, "/"),
+    R(views.PastaShowView, "/p/<pasta_id>/"),
+    R(views.PastaShowTextView, "/p/<pasta_id>/text/"),
+    R(views.PastaShowAttachmentView, "/p/<pasta_id>/attachment/"),
+    R(views.PastaDeleteView, "/p/<pasta_id>/delete/"),
 ])
 
 template_dir = path.join(path.dirname(path.dirname(__file__)), "templates")
@@ -24,6 +26,7 @@ jinja_env = Environment(loader=FileSystemLoader(template_dir))
 def pastabin_app(environ, start_response):
     local.jinja_env = jinja_env
     local.adapter = url_map.bind_to_environ(environ)
+    local.reverse = local.adapter.build
     local.request = Request(environ)
     try:
         endpoint, kwds = local.adapter.match()
