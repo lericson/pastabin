@@ -1,4 +1,17 @@
 /**
+ * O HI. I AM AN ORANGUTANG, WOOPA WOOPA
+ *
+ * Copyright (c) Send a Patch <ludvig@sendapatch.se>, 2010
+ */
+
+/**
+ * Why does JavaScript not have this?
+ */
+String.prototype.endsWith = function(v) {
+  return this.substring(this.length - v.length) == v;
+};
+
+/**
  * Keyboard shortcuts
  */
 var shortcuts = new Hash({
@@ -13,7 +26,7 @@ var shortcuts = new Hash({
     return false;
   },
   'enter': function(){
-    $('pasteform').submit();
+    $$(".bambutton").getParent("form")[0].submit();
     return false;
   }
 });
@@ -62,9 +75,9 @@ function updateShortcutTitles(force) {
   var labelEl = lexerEl.getParent('label');
   labelEl.set('html', labelEl.get('html') + ' &#8211; &#8997; Space');
 
-  var submitEl = $("make_pasta");
-  if ($type(submitEl) != "undefined")
-    submitEl.value = 'Make pasta ⌥↩';
+  var bamEl = $$(".bambutton")[0];
+  if (bamEl && !bamEl.value.endsWith(' ⌥↩'))
+    bamEl.value += ' ⌥↩';
 }
 
 /**
@@ -76,9 +89,8 @@ function rebuildLexerIntoText() {
 
   var textInput = new Element(
       'input',
-      {type: 'text',
-       value: 'text',
-       name: 'lexer'});
+      {type: 'text', value: 'text',
+       name: this.name, id: this.id});
   textInput.inject(this.id, 'after');
   textInput.focus();
   this.destroy();

@@ -114,14 +114,33 @@ class PastaShowView(BaseView):
 
     def get(self, pasta_id):
         pasta = self.pasta_from_id(pasta_id)
-        owner = (self.getset_uuid() == pasta.uuid)
-        ctx = {"pasta": pasta, "owner": owner}
+        ctx = {"pasta": pasta, "owner": self.match_uuid(pasta)}
         return JinjaResponse("show_pasta.html", ctx)
 
 class PastaCloneView(PastaCreateView, PastaShowView):
+    allowed_methods = ("GET",)
+
+    post = None
     def get(self, pasta_id):
         pasta = self.pasta_from_id(pasta_id)
         return JinjaResponse("new_pasta.html", {"code": pasta.code})
+
+class PastaEditLexerView(PastaShowView):
+    allowed_methods = ("POST",)
+
+    get = None
+    def post(self, pasta_id):
+        pasta = self.pasta_from_id(pasta_id)
+        if not self.match_uuid(pasta):
+            raise YouMayNotPass()
+        pasta.lexer = self.request.form["lexer"]
+        try:
+            pasta.hilight()
+        except LexerNotFound, e:
+            pass  # XXX Fix this and do something.
+        else:
+            pasta.put()
+        return redirect("/p/" + pasta.pasta_id + "/")
 
 class PastaShowTextView(PastaShowView):
     def get(self, pasta_id):

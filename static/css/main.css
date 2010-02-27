@@ -7,7 +7,7 @@ body {
   margin: 20px;
 }
 
-#pc, label, #make_pasta {
+#pc, .navarea, #make_pasta {
   background: #fff;
   border: 1px solid #bebebe;
   display: block;

@@ -9,14 +9,24 @@
 
 {% block body %}
   <ul id="menu">
-    <li><a href="text/">Original text</a></li>
-    <li><a href="attachment/">As attachment</a></li>
-    <li><a href="/">New pasta</a></li>
     {%- if owner %}
-    <li><a href="delete/">Delete pasta</a></li>
+    <li><a href="delete/">Remove</a></li>
     {%- endif %}
-    <li><a href="clone/">Clone pasta</a></li>
+    <li><a href="text/">Plain-text</a></li>
+    <li><a href="attachment/">Download</a></li>
+    <li><a href="clone/">Clone</a></li>
+    <li><a href="/">New</a></li>
   </ul>
-  <br style="clear: left;"/>
-    {{ pasta.code_html }}
+  <div style="clear: left;"/></div>
+
+  {% if owner -%}
+  <form action="edit/" method="post">
+    <div class="navarea">
+      <label for="lexer">I'm having {% include "lexers.html" %} pasta</label>
+      <input type="submit" class="bambutton" value="Change pasta type" />
+    </div>
+  </form>
+  {%- endif %}
+
+  {{ pasta.code_html }}
 {%- endblock %}
