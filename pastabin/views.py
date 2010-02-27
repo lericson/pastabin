@@ -118,6 +118,11 @@ class PastaShowView(BaseView):
         ctx = {"pasta": pasta, "owner": owner}
         return JinjaResponse("show_pasta.html", ctx)
 
+class PastaCloneView(PastaCreateView, PastaShowView):
+    def get(self, pasta_id):
+        pasta = self.pasta_from_id(pasta_id)
+        return JinjaResponse("new_pasta.html", {"code": pasta.code})
+
 class PastaShowTextView(PastaShowView):
     def get(self, pasta_id):
         pasta = self.pasta_from_id(pasta_id)

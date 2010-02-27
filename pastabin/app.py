@@ -14,6 +14,7 @@ def R(view, url): return view.create_rule(url)
 url_map = Map([
     R(views.PastaCreateView, "/"),
     R(views.PastaShowView, "/p/<pasta_id>/"),
+    R(views.PastaCloneView, "/p/<pasta_id>/clone/"),
     R(views.PastaShowTextView, "/p/<pasta_id>/text/"),
     R(views.PastaShowAttachmentView, "/p/<pasta_id>/attachment/"),
     R(views.PastaDeleteView, "/p/<pasta_id>/delete/"),
