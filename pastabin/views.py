@@ -63,8 +63,12 @@ class PastaCreateView(BaseView):
 
     def post(self):
         form = self.request.form
-        lexer = form.get("lexer", "guess")
-        code = form.get("code")
+        if "code" in self.request.files:
+            code = self.request.files["code"].read()
+            lexer = self.request.query_string
+        else:
+            lexer = form.get("lexer", "guess")
+            code = form.get("code")
         errors = []
         error = lambda *a: errors.append(a)
         if not lexer:
@@ -94,7 +98,9 @@ class PastaCreateView(BaseView):
         pasta.uuid = self.getset_uuid()
         pasta.put()
         self.logger.info("created pasta %s", pasta)
-        resp = redirect("/p/" + pasta.pasta_id + "/")
+        redir_url = self.request.base_url + "p/" + pasta.pasta_id + "/"
+        resp = Response(redir_url + "\n", mimetype="text/plain")
+        resp.headers["Location"] = redir_url
         resp.set_cookie(self.uuid_cookie, pasta.uuid)
         return resp
 
