@@ -1,3 +1,4 @@
+import datetime
 import string
 import random
 
@@ -5,6 +6,8 @@ from google.appengine.ext import db
 import pygments
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name
+
+set_accesed_delta = datetime.timedelta(days=1)
 
 class PastaID(db.StringProperty):
     def default_value(self):
@@ -14,6 +17,7 @@ class Pasta(db.Model):
     pasta_id = PastaID()
     created = db.DateTimeProperty(auto_now_add=True)
     author = db.UserProperty(auto_current_user_add=True)
+    accessed = db.DateTimeProperty(auto_now_add=True)
     author_ip = db.StringProperty()
     lexer = db.StringProperty()
     code = db.TextProperty()
@@ -27,6 +31,23 @@ class Pasta(db.Model):
                 self.author_ip, self.author or "anonymous",
                 self.lexer, shortened_code)
         return "<%s %s for %s (%s) in %s (%s)>" % args
+
+    def touch(self, accessed=None):
+        """Potentially update self.accessed, depending on how far in the future
+        *accessed* is.
+        """
+        if accessed is None:
+            accessed = datetime.datetime.now()
+
+        if self.accessed:
+            accessed_delta = accessed - self.accessed
+        else:
+            accessed_delta = set_accesed_delta * 2
+
+        if accessed_delta >= set_accesed_delta:
+            self.accessed = accessed
+            self.put()
+            return True
 
     def make_formatter(self):
         return HtmlFormatter(cssclass="source", linenos=True, linenospecial=5)

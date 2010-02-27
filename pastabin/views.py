@@ -56,13 +56,17 @@ class PastaCreateView(BaseView):
             except LexerNotFound, e:
                 error("lexer-not-found", e.args[0])
             else:
-                self.logger.info("created pasta %s", pasta)
                 pasta.put()
-                return redirect("/p/" + pasta.pasta_id + "/")
+                return self.store_pasta(pasta)
         context = {"errors": errors,
                    "lexer": form.get("lexer"),
                    "code": form.get("code")}
         return JinjaResponse("new_pasta.html", context)
+
+    def store_pasta(self, pasta):
+        self.logger.info("created pasta %s", pasta)
+        resp = redirect("/p/" + pasta.pasta_id + "/")
+        return resp
 
     def get(self):
         return JinjaResponse("new_pasta.html")
@@ -74,6 +78,7 @@ class PastaShowView(BaseView):
         pasta = Pasta.all().filter("pasta_id =", pasta_id).get()
         if pasta is None:
             raise NotFound(pasta_id)
+        pasta.touch()
         return pasta
 
     def get(self, pasta_id):
