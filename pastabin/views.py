@@ -26,7 +26,7 @@ class BaseView(object):
         self.request = request
 
     def getset_uuid(self):
-        """Get or set the UUID for the current client."""
+        """Get or create a UUID for the current client."""
         curr_uuid = self.request.cookies.get(self.uuid_cookie)
         if curr_uuid and valid_uuid(curr_uuid):
             return curr_uuid
@@ -95,7 +95,9 @@ class PastaShowView(BaseView):
 
     def get(self, pasta_id):
         pasta = self.pasta_from_id(pasta_id)
-        return JinjaResponse("show_pasta.html", {"pasta": pasta})
+        owner = (self.getset_uuid() == pasta.uuid)
+        ctx = {"pasta": pasta, "owner": owner}
+        return JinjaResponse("show_pasta.html", ctx)
 
 class PastaShowTextView(PastaShowView):
     def get(self, pasta_id):

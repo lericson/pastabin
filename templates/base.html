@@ -1,14 +1,18 @@
+{% macro js(href) %}<script src="/static/js/{{ href }}" type="text/javascript" charset="utf-8"></script>{% endmacro %}
+{% macro css(href) %}<link rel="stylesheet" href="/static/css/{{ href }}" type="text/css" charset="utf-8"/>{% endmacro %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
     <title>{% block title %}Goodbye horses{% endblock %}</title>
-    <link rel="stylesheet" href="/static/css/reset.css" type="text/css" charset="utf-8"/>
-    <link rel="stylesheet" href="/static/css/main.css" type="text/css" charset="utf-8"/>
-    <link rel="stylesheet" href="/static/css/style.css" type="text/css" charset="utf-8"/>
-    <script src="/static/js/mootools.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/static/js/main.js" type="text/javascript" charset="utf-8"></script>
+    {% block head %}
+      {# CSS reset #}{{ css("reset.css") }}
+      {# Main styling #}{{ css("main.css") }}
+      {# Pygments syntax hilight #}{{ css("style.css") }}
+      {# MooTools! #}{{ js("mootools.js") }}
+      {# Main JavaScript (generic) #}{{ js("main.js") }}
+    {% endblock %}
   </head>
   <body>
     <div id="container">

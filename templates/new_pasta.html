@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 
 {% block title %}Pasta ist sehr gut, ja!{% endblock %}
+{% block head %}
+  {{ super() }}
+  {{ js("views/create.js") }}
+{% endblock %}
 
 {% block body %}
   <div id="container">

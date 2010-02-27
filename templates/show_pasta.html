@@ -1,14 +1,21 @@
 {% extends "base.html" %}
 
 {% block title %}Viewing the {{ pasta.lexer }} {{ pasta.pasta_id }} pasta{% endblock %}
+{% block head -%}
+  {{- super() -}}
+  {{ js("views/show.js") }}
+  {% if owner %}{{ js("views/show_owner.js") }}{% endif %}
+{%- endblock %}
 
 {% block body %}
-  {{ style }}
   <ul id="menu">
     <li><a href="text/">Original text</a></li>
     <li><a href="attachment/">As attachment</a></li>
     <li><a href="/">New paste</a></li>
+    {%- if owner %}
+    <li><a href="delete/">Delete paste</a></li>
+    {%- endif %}
   </ul>
   <br style="clear: left;"/>
     {{ pasta.code_html }}
-{% endblock %}
+{%- endblock %}
