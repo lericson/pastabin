@@ -15,9 +15,10 @@ class PastaID(db.StringProperty):
 
 class Pasta(db.Model):
     pasta_id = PastaID()
+    uuid = db.StringProperty()
     created = db.DateTimeProperty(auto_now_add=True)
-    author = db.UserProperty(auto_current_user_add=True)
     accessed = db.DateTimeProperty(auto_now_add=True)
+    author = db.UserProperty(auto_current_user_add=True)
     author_ip = db.StringProperty()
     lexer = db.StringProperty()
     code = db.TextProperty()
@@ -27,7 +28,7 @@ class Pasta(db.Model):
         shortened_code = repr(self.code)
         if len(shortened_code) > 13:
             shortened_code = shortened_code[:10] + "..."
-        args = (self.__class__.__name__, self.pasta_id,
+        args = (type(self).__name__, self.pasta_id,
                 self.author_ip, self.author or "anonymous",
                 self.lexer, shortened_code)
         return "<%s %s for %s (%s) in %s (%s)>" % args

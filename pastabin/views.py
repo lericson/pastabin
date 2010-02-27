@@ -1,3 +1,4 @@
+import uuid
 import logging
 
 from werkzeug import Response, redirect
@@ -7,9 +8,11 @@ from pygments.lexers import guess_lexer
 from pygments.lexers import ClassNotFound as LexerNotFound
 
 from pastabin.db import Pasta
-from pastabin.utils import local, JinjaResponse
+from pastabin.utils import JinjaResponse, valid_uuid
 
 class BaseView(object):
+    uuid_cookie = "uuid"
+
     def __new__(cls, request, *args, **kwds):
         self = super(BaseView, cls).__new__(cls, request)
         self.__init__(request)
@@ -21,6 +24,13 @@ class BaseView(object):
 
     def __init__(self, request):
         self.request = request
+
+    def getset_uuid(self):
+        """Get or set the UUID for the current client."""
+        curr_uuid = self.request.cookies.get(self.uuid_cookie)
+        if curr_uuid and valid_uuid(curr_uuid):
+            return curr_uuid
+        return str(uuid.uuid4())
 
     @classmethod
     def create_rule(cls, *args, **kwds):
@@ -56,7 +66,6 @@ class PastaCreateView(BaseView):
             except LexerNotFound, e:
                 error("lexer-not-found", e.args[0])
             else:
-                pasta.put()
                 return self.store_pasta(pasta)
         context = {"errors": errors,
                    "lexer": form.get("lexer"),
@@ -64,8 +73,11 @@ class PastaCreateView(BaseView):
         return JinjaResponse("new_pasta.html", context)
 
     def store_pasta(self, pasta):
+        pasta.uuid = self.getset_uuid()
+        pasta.put()
         self.logger.info("created pasta %s", pasta)
         resp = redirect("/p/" + pasta.pasta_id + "/")
+        resp.set_cookie(self.uuid_cookie, pasta.uuid)
         return resp
 
     def get(self):
