@@ -10,10 +10,11 @@
   <div id="container">
     <form id="pasteform" action="/" method="post" accept-charset="utf-8">
       <label class="navarea" for="lexer">
+        {% set current_lexer = lexer if lexer is defined %}
         I'm having {% include "lexers.html" %} pasta
       </label>
       {% for error in errors %}
-        <p class="errror {{ error.0 }}">{{ error.1 }}</p>
+        <p class="error {{ error.0 }}">{{ error.1 }}</p>
       {% endfor %}
       <div id="pc"><textarea id="code" name="code" rows="8" cols="40">{{ code|e }}</textarea></div>
       <p><input type="submit" id="make_pasta" class="bambutton" value="Make pasta"/></p>

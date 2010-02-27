@@ -99,7 +99,7 @@ class PastaCreateView(BaseView):
         pasta.put()
         self.logger.info("created pasta %s", pasta)
         redir_url = self.request.base_url + "p/" + pasta.pasta_id + "/"
-        resp = Response(redir_url + "\n", mimetype="text/plain")
+        resp = Response(redir_url + "\n", 302, mimetype="text/plain")
         resp.headers["Location"] = redir_url
         resp.set_cookie(self.uuid_cookie, pasta.uuid)
         return resp
@@ -129,7 +129,8 @@ class PastaCloneView(PastaCreateView, PastaShowView):
     post = None
     def get(self, pasta_id):
         pasta = self.pasta_from_id(pasta_id)
-        return JinjaResponse("new_pasta.html", {"code": pasta.code})
+        ctx = {"code": pasta.code, "lexer": pasta.lexer}
+        return JinjaResponse("new_pasta.html", ctx)
 
 class PastaEditLexerView(PastaShowView):
     allowed_methods = ("POST",)

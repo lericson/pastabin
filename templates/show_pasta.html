@@ -22,6 +22,7 @@
   {% if owner -%}
   <form action="edit/" method="post">
     <div class="navarea">
+      {% set current_lexer = pasta.lexer %}
       <label for="lexer">I'm having {% include "lexers.html" %} pasta</label>
       <input type="submit" class="bambutton" value="Change pasta type" />
     </div>

@@ -1,46 +1,51 @@
     <select name="lexer" id="lexer">
-      <option value="text" selected="selected">the usual</option>
-      <option value="not_in_list">(manual input)</option>
-      <option value="as">ActionScript</option>
-      <option value="apacheconf">Apache configuration</option>
-      <option value="bash">Bash</option>
-      <option value="bat">Batchfile</option>
-      <option value="bbcode">BBCode</option>
-      <option value="c">C</option>
-      <option value="csharp">C#</option>
-      <option value="css">CSS</option>
-      <option value="d">D</option>
-      <option value="delphi">Delphi</option>
-      <option value="diff">Diff</option>
-      <option value="django">Django template</option>
-      <option value="erlang">Erlang</option>
-      <option value="haskell">Haskell</option>
-      <option value="html">HTML</option>
-      <option value="ini">INI</option>
-      <option value="java">Java</option>
-      <option value="js">JavaScript &#9733;</option>
-      <option value="jsp">JSP (Java Server Page&trade;)</option>
-      <option value="django">Jinja template</option>
-      <option value="tex">LaTeX</option>
-      <option value="common-lisp">Lisp (CLisp)</option>
-      <option value="llvm">LLVM</option>
-      <option value="lua">Lua</option>
-      <option value="make">Makefile</option>
-      <option value="mako">Mako</option>
-      <option value="trac-wiki">Trac Wiki markup</option>
-      <option value="objective-c">Objective-C</option>
-      <option value="ocaml">OCaml</option>
-      <option value="perl">Perl</option>
-      <option value="php">PHP</option>
-      <option value="python">Python &#9829;</option>
-      <option value="pycon">Python interactive interpreter</option>
-      <option value="rst">reStructuredText</option>
-      <option value="rhtml">RHTML</option>
-      <option value="rb">Ruby</option>
-      <option value="rbcon">Ruby IRB session</option>
-      <option value="scheme">Scheme</option>
-      <option value="sql">SQL</option>
-      <option value="text">Text only</option>
-      <option value="vim">Vim script</option>
-      <option value="xml">XML</option>
+{% set lexers = [
+      ("not_in_list", "(manual input)"),
+      ("as", "ActionScript"),
+      ("apacheconf", "Apache configuration"),
+      ("bash", "Bash"),
+      ("bat", "Batchfile"),
+      ("bbcode", "BBCode"),
+      ("c", "C"),
+      ("csharp", "C#"),
+      ("css", "CSS"),
+      ("d", "D"),
+      ("delphi", "Delphi"),
+      ("diff", "Diff"),
+      ("django", "Django template"),
+      ("erlang", "Erlang"),
+      ("haskell", "Haskell"),
+      ("html", "HTML"),
+      ("ini", "INI"),
+      ("java", "Java"),
+      ("js", "JavaScript &#9733;"),
+      ("jsp", "JSP (Java Server Page&trade;)"),
+      ("django", "Jinja template"),
+      ("tex", "LaTeX"),
+      ("common-lisp", "Lisp (CLisp)"),
+      ("llvm", "LLVM"),
+      ("lua", "Lua"),
+      ("make", "Makefile"),
+      ("mako", "Mako"),
+      ("trac-wiki", "Trac Wiki markup"),
+      ("objective-c", "Objective-C"),
+      ("ocaml", "OCaml"),
+      ("perl", "Perl"),
+      ("php", "PHP"),
+      ("python", "Python &#9829;"),
+      ("pycon", "Python interactive interpreter"),
+      ("rst", "reStructuredText"),
+      ("rhtml", "RHTML"),
+      ("rb", "Ruby"),
+      ("rbcon", "Ruby IRB session"),
+      ("scheme", "Scheme"),
+      ("sql", "SQL"),
+      ("text", "Text only"),
+      ("vim", "Vim script"),
+      ("xml", "XML"),
+  ] %}
+      <option value="text">the usual</option>
+{% for (lexer, display) in lexers %}
+      <option value="{{ lexer }}"{% if current_lexer == lexer %} selected="selected"{% endif %}>{{ display }}</option>
+{% endfor %}
     </select>
