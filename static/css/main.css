@@ -45,6 +45,7 @@ textarea:focus {
 
 ul#menu {
   height: 36px;
+  margin: 20px 0;
 }
 
 ul#menu li {
