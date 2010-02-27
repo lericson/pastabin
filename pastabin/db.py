@@ -42,7 +42,9 @@ class Pasta(db.Model):
         """
         formatter = self.make_formatter()
         lexer = self.make_lexer()
-        self.code_html = pygments.highlight(self.code, lexer, formatter)
+        code_rend = pygments.highlight(self.code, lexer, formatter)
+        if store:
+            self.code_html = code_rend
         return self.code_html
 
 # TODO Potential pasta salad.
