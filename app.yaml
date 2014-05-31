@@ -1,8 +1,12 @@
-application: pastabin
+application: pastabin-hrd
 version: 2-kreml
-
-runtime: python
+runtime: python27
 api_version: 1
+threadsafe: true
+
+libraries:
+- name: jinja2
+  version: "2.6"
 
 builtins:
 - deferred: on
@@ -12,4 +16,4 @@ handlers:
   static_dir: static
 
 - url: /.*
-  script: main.py
+  script: pastabin.app.pastabin_app
