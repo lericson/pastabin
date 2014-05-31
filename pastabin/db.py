@@ -2,12 +2,17 @@ import datetime
 import string
 import random
 
-from google.appengine.ext import db
+from google.appengine.ext import db, deferred
 import pygments
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name
 
-set_accesed_delta = datetime.timedelta(days=1)
+touch_minimum_elapsed = datetime.timedelta(days=1)
+
+def _update_accessed(key, accessed):
+    pasta = Pasta.get(key)
+    pasta.accessed = accessed
+    pasta.put()
 
 class PastaID(db.StringProperty):
     def default_value(self):
@@ -41,14 +46,12 @@ class Pasta(db.Model):
             accessed = datetime.datetime.now()
 
         if self.accessed:
-            accessed_delta = accessed - self.accessed
-        else:
-            accessed_delta = set_accesed_delta * 2
+            elapsed = accessed - self.accessed
+            if elapsed < touch_minimum_elapsed:
+                return False
 
-        if accessed_delta >= set_accesed_delta:
-            self.accessed = accessed
-            self.put()
-            return True
+        deferred.defer(_update_accessed, self.key(), accessed)
+        return True
 
     def make_formatter(self):
         return HtmlFormatter(cssclass="source", linenos=True, linenospecial=5)
