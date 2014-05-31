@@ -5,8 +5,7 @@ from pygments.lexers import guess_lexer
 from pygments.lexers import ClassNotFound as LexerNotFound
 from werkzeug import Response, redirect
 from werkzeug.routing import Rule
-from werkzeug.exceptions import (BadRequest, Forbidden,
-                                 NotFound, MethodNotAllowed)
+from werkzeug.exceptions import Forbidden, NotFound, MethodNotAllowed
 
 from pastabin.db import Pasta
 from pastabin.utils import JinjaResponse, valid_uuid
@@ -143,7 +142,7 @@ class PastaEditLexerView(PastaShowView):
         pasta.lexer = self.request.form["lexer"]
         try:
             pasta.hilight()
-        except LexerNotFound, e:
+        except LexerNotFound:
             pass  # XXX Fix this and do something.
         else:
             pasta.put()
